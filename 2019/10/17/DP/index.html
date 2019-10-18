@@ -7,17 +7,17 @@
   
   <title>DP | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="#关于动态规划的学习记录 #背包问题背包九讲+01背包luogu106001背包裸题，没啥好说的，就是要注意判断一下：j &amp;gt; a[i]，数组下标不要越界 1234567891011121314151617181920using namespace std;const int N = 100;const int M = 100010;int a[N], b[N], plu[M];#define">
+  <meta name="description" content="关于动态规划的学习记录背包问题背包九讲  01背包luogu106001背包裸题，没啥好说的，就是要注意判断一下：j &amp;gt; a[i]，数组下标不要越界 1234567891011121314151617181920using namespace std;const int N = 100;const int M = 100010;int a[N], b[N], plu[M];#define m">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DP">
 <meta property="og:url" content="http://yoursite.com/2019/10/17/DP/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="#关于动态规划的学习记录 #背包问题背包九讲+01背包luogu106001背包裸题，没啥好说的，就是要注意判断一下：j &amp;gt; a[i]，数组下标不要越界 1234567891011121314151617181920using namespace std;const int N = 100;const int M = 100010;int a[N], b[N], plu[M];#define">
+<meta property="og:description" content="关于动态规划的学习记录背包问题背包九讲  01背包luogu106001背包裸题，没啥好说的，就是要注意判断一下：j &amp;gt; a[i]，数组下标不要越界 1234567891011121314151617181920using namespace std;const int N = 100;const int M = 100010;int a[N], b[N], plu[M];#define m">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-10-17T13:17:40.666Z">
+<meta property="og:updated_time" content="2019-10-18T05:29:08.969Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DP">
-<meta name="twitter:description" content="#关于动态规划的学习记录 #背包问题背包九讲+01背包luogu106001背包裸题，没啥好说的，就是要注意判断一下：j &amp;gt; a[i]，数组下标不要越界 1234567891011121314151617181920using namespace std;const int N = 100;const int M = 100010;int a[N], b[N], plu[M];#define">
+<meta name="twitter:description" content="关于动态规划的学习记录背包问题背包九讲  01背包luogu106001背包裸题，没啥好说的，就是要注意判断一下：j &amp;gt; a[i]，数组下标不要越界 1234567891011121314151617181920using namespace std;const int N = 100;const int M = 100010;int a[N], b[N], plu[M];#define m">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -86,11 +86,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>#关于动态规划的学习记录</p>
-<p>#背包问题<br><em>背包九讲</em><br>+01背包<br>luogu1060<br>01背包裸题，没啥好说的，就是要注意判断一下：j &gt; a[i]，数组下标不要越界</p>
+        <h2 id="关于动态规划的学习记录"><a href="#关于动态规划的学习记录" class="headerlink" title="关于动态规划的学习记录"></a>关于动态规划的学习记录</h2><h1 id="背包问题"><a href="#背包问题" class="headerlink" title="背包问题"></a>背包问题</h1><p><em>背包九讲</em></p>
+<ul>
+<li><p>01背包<br>luogu1060<br>01背包裸题，没啥好说的，就是要注意判断一下：j &gt; a[i]，数组下标不要越界</p>
 <figure class="highlight plain"><figcaption><span><cstdio></cstdio></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">using namespace std;</span><br><span class="line">const int N = 100;</span><br><span class="line">const int M = 100010;</span><br><span class="line">int a[N], b[N], plu[M];</span><br><span class="line">#define max(a, b) a &gt; b ? a : b</span><br><span class="line">int main() &#123;</span><br><span class="line">	int n, m;</span><br><span class="line">	scanf(&quot;%d %d&quot;, &amp;n, &amp;m);</span><br><span class="line">	for (int i = 0; i &lt; m; i++)</span><br><span class="line">		scanf(&quot;%d %d&quot;, &amp;a[i], &amp;b[i]);</span><br><span class="line">	for (int i = 0; i &lt; m; i++)</span><br><span class="line">		for (int j = n; j &gt;= 0; j--)</span><br><span class="line">			if (j &gt;= a[i])</span><br><span class="line">				plu[j] = max(plu[j - a[i]] + a[i] * b[i], plu[j]);</span><br><span class="line">	int ans = 0;</span><br><span class="line">	for (int i = 0; i &lt;= n; i++)</span><br><span class="line">		ans = max(ans, plu[i]);</span><br><span class="line">	printf(&quot;%d&quot;, ans);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>+完全背包<br>其实关于完全背包我高中已经看过很多遍了，但是再次看还是会惊叹这个思想的精妙<br>从简单的优化到二进制优化到最后的O(VN)复杂度算法<br><em>值得一提的是二进制的思想，也是很神奇，快速冪，树状数组都是基于二进制，因为任何数都能表示为二进制的集合体，所以说在枚举时拆成二进制可以把N降低到logN</em></p>
+</li>
+<li><p>完全背包<br>其实关于完全背包我高中已经看过很多遍了，但是再次看还是会惊叹这个思想的精妙<br>从简单的优化到二进制优化到最后的O(VN)复杂度算法</p>
+</li>
+</ul>
+<p><em>值得一提的是二进制的思想，也是很神奇，快速冪，树状数组都是基于二进制，因为任何数都能表示为二进制的集合体，所以说在枚举时拆成二进制可以把N降低到logN</em></p>
 <figure class="highlight plain"><figcaption><span>(int i </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">for (int j = w[i]; j &lt; n; j++)</span><br><span class="line">    dp[j] = max(dp[j], dp[j - w[i]] + v[i]);</span><br></pre></td></tr></table></figure>
 
 <p>然后就是luogu1616 完全背包裸题</p>
@@ -100,7 +104,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/10/17/DP/" data-id="ck1uql3lj00027ihxzxylunh1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/10/17/DP/" data-id="ck1vp1d5k00006ihx5d1ej64k" class="article-share-link">Share</a>
       
       
     </footer>
