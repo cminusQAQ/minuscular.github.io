@@ -110,14 +110,18 @@
 </li>
 <li><p>分组背包<br>相当巧妙的方法，前面利用01背包（前面组和容量的关系就是特殊的01背包），后面再加上一个循环模拟组内哪个最优<br>luogu1757</p>
 <figure class="highlight plain"><figcaption><span><cstdio></cstdio></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef pair &lt;int, int&gt; P;</span><br><span class="line">const int N = 10010;</span><br><span class="line">#define f first</span><br><span class="line">#define s second</span><br><span class="line">vector &lt; P &gt; e[N];</span><br><span class="line">int dp[N];</span><br><span class="line">int main() &#123;</span><br><span class="line">	int n, m;</span><br><span class="line">	scanf(&quot;%d %d&quot;, &amp;m, &amp;n);</span><br><span class="line">	int mc = 0;</span><br><span class="line">	for (int i = 0; i &lt; n; i++) &#123;</span><br><span class="line">		int a, b, c;</span><br><span class="line">		scanf(&quot;%d %d %d&quot;, &amp;a, &amp;b, &amp;c);</span><br><span class="line">		e[c].push_back(make_pair(a, b));</span><br><span class="line">		mc = max(mc, c);</span><br><span class="line">	&#125;</span><br><span class="line">	for (int i = 0; i &lt;= mc; i++)</span><br><span class="line">		for (int j = m; j &gt;= 0; j--)</span><br><span class="line">			for (int k = 0; k &lt; e[i].size(); k++)</span><br><span class="line">				if (j &gt;= e[i][k].f)</span><br><span class="line">					dp[j] = max(dp[j],dp[j - e[i][k].f] + e[i][k].s);</span><br><span class="line">	printf(&quot;%d&quot;, dp[m]);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+</li>
+<li><p>依赖背包<br>luogu1064金明的预算方案，真的写了很久 （ps：上次写是用特判解决<br>记录一下出现的几个问题<br>1：尝试用dfs写，但是复杂度会太高导致爆炸</p>
 </li>
 </ul>
+<p>2.把主件预处理了一遍，但此时主件有可能没被选<br>3.把主件和附件放在了一起，但是这样就重复计算了<br>最后的解决方法是先用一个数组储存一定选择该主件的情况，再和所有的进行比较</p>
+<figure class="highlight plain"><figcaption><span><cstdio></cstdio></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N = 100;</span><br><span class="line">vector &lt; int &gt; e[N];</span><br><span class="line">int v[N], p[N], f[50010], mf[50010];</span><br><span class="line">int main() &#123;</span><br><span class="line">	int n, m;</span><br><span class="line">	scanf(&quot;%d %d&quot;, &amp;n, &amp;m);</span><br><span class="line">	for (int i = 1; i &lt;= m; i++) &#123;</span><br><span class="line">		int q;</span><br><span class="line">		scanf(&quot;%d %d %d&quot;, &amp;v[i], &amp;p[i], &amp;q);</span><br><span class="line">		e[q].push_back(i);</span><br><span class="line">	&#125;</span><br><span class="line">	for (int i = 0; i &lt; e[0].size(); i++) &#123;</span><br><span class="line">		int u = e[0][i];</span><br><span class="line">		for (int j = n; j &gt;= v[u]; j--)</span><br><span class="line">			mf[j] = f[j - v[u]] + v[u] * p[u];</span><br><span class="line">		for (int j = 0; j &lt; e[u].size(); j++)</span><br><span class="line">			for (int k = n; k &gt;= v[e[u][j]] + v[u]; k--)</span><br><span class="line">				mf[k] = max(mf[k], mf[k - v[e[u][j]]] + v[e[u][j]] * p[e[u][j]]);</span><br><span class="line">		for (int j = n; j &gt;= v[u]; j--)</span><br><span class="line">			f[j] = max(f[j], mf[j]);</span><br><span class="line">	&#125;</span><br><span class="line">	printf(&quot;%d&quot;, f[n]);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/10/17/DP/" data-id="ck2263g6w0000mhhxvlrf0cpa" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/10/17/DP/" data-id="ck29a213n0000iehx9m5nym5q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -161,7 +165,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/10/11/begin/" data-id="ck2263g780003mhhxveg3hfsf" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/10/11/begin/" data-id="ck29a213x0003iehx423jonht" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/diary/">diary</a></li></ul>
@@ -199,7 +203,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/10/09/MY-NEW-POST/" data-id="ck2263g760002mhhxfx4kqsrp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/10/09/MY-NEW-POST/" data-id="ck29a213t0002iehxr5sogjvj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -248,7 +252,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/10/09/hello-world/" data-id="ck2263g7a0004mhhxvtlhl19k" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/10/09/hello-world/" data-id="ck29a213y0004iehxaihlva7s" class="article-share-link">Share</a>
       
       
     </footer>
