@@ -117,11 +117,16 @@
 <p>2.把主件预处理了一遍，但此时主件有可能没被选<br>3.把主件和附件放在了一起，但是这样就重复计算了<br>最后的解决方法是先用一个数组储存一定选择该主件的情况，再和所有的进行比较</p>
 <figure class="highlight plain"><figcaption><span><cstdio></cstdio></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N = 100;</span><br><span class="line">vector &lt; int &gt; e[N];</span><br><span class="line">int v[N], p[N], f[50010], mf[50010];</span><br><span class="line">int main() &#123;</span><br><span class="line">	int n, m;</span><br><span class="line">	scanf(&quot;%d %d&quot;, &amp;n, &amp;m);</span><br><span class="line">	for (int i = 1; i &lt;= m; i++) &#123;</span><br><span class="line">		int q;</span><br><span class="line">		scanf(&quot;%d %d %d&quot;, &amp;v[i], &amp;p[i], &amp;q);</span><br><span class="line">		e[q].push_back(i);</span><br><span class="line">	&#125;</span><br><span class="line">	for (int i = 0; i &lt; e[0].size(); i++) &#123;</span><br><span class="line">		int u = e[0][i];</span><br><span class="line">		for (int j = n; j &gt;= v[u]; j--)</span><br><span class="line">			mf[j] = f[j - v[u]] + v[u] * p[u];</span><br><span class="line">		for (int j = 0; j &lt; e[u].size(); j++)</span><br><span class="line">			for (int k = n; k &gt;= v[e[u][j]] + v[u]; k--)</span><br><span class="line">				mf[k] = max(mf[k], mf[k - v[e[u][j]]] + v[e[u][j]] * p[e[u][j]]);</span><br><span class="line">		for (int j = n; j &gt;= v[u]; j--)</span><br><span class="line">			f[j] = max(f[j], mf[j]);</span><br><span class="line">	&#125;</span><br><span class="line">	printf(&quot;%d&quot;, f[n]);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<ul>
+<li>k优解背包<br>luogu1064 k优解背包其实是对于01背包每个状态上加一维，记录0～k优解分别是什么，然后每次合并就采用归并排序的方法。<figure class="highlight plain"><figcaption><span><cstdio></cstdio></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">using namespace std;</span><br><span class="line">const int N = 10010;</span><br><span class="line">int w[N], v[N], f[N][55], l[N], r[N];</span><br><span class="line">int main() &#123;</span><br><span class="line">	int K, V, n;</span><br><span class="line">	scanf(&quot;%d %d %d&quot;, &amp;K, &amp;V, &amp;n);</span><br><span class="line">	for (int i = 0; i &lt; n; i++)</span><br><span class="line">		scanf(&quot;%d %d&quot;, &amp;w[i], &amp;v[i]);</span><br><span class="line">	for (int i = 1; i &lt;= V; i++)</span><br><span class="line">		for (int j = 0; j &lt; K; j++) &#123;</span><br><span class="line">			f[i][j] = -214743640; //这个是随便的，只要是&lt;0很多的数字都可以</span><br><span class="line">			l[j] = -21236472;</span><br><span class="line">			r[i] = -983743791;</span><br><span class="line">		&#125;</span><br><span class="line">	for (int i = 0; i &lt; n; i++)</span><br><span class="line">		for (int j = V; j &gt;= w[i]; j--) &#123;</span><br><span class="line">			for (int k = 0; k &lt; K; k++) &#123;</span><br><span class="line">				l[k] = f[j][k];</span><br><span class="line">				if (f[j - w[i]][k] == 0 &amp;&amp; k &gt; 0) // 这个判断很重要，否则就会有很多k优解不存在的情况被记录，这样保证了每次产生的新的状态是由原来两个状态合并，新状态数 = a + b，不会误产生新的</span><br><span class="line">					continue;</span><br><span class="line">				else	r[k] = f[j - w[i]][k] + v[i];</span><br><span class="line">			&#125;</span><br><span class="line">			int k = 0, cnt1 = 0, cnt2 = 0;</span><br><span class="line">			while (k &lt; K) &#123;</span><br><span class="line">				if (l[cnt1] &lt; r[cnt2])</span><br><span class="line">					f[j][k++] = r[cnt2++];</span><br><span class="line">				else	f[j][k++] = l[cnt1++];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	int ans = 0;</span><br><span class="line">	for (int i = 0; i &lt; K; i++)</span><br><span class="line">		ans += (f[V][i] ? f[V][i] : 0);</span><br><span class="line">	printf(&quot;%d&quot;, ans);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/10/17/DP/" data-id="ck29a213n0000iehx9m5nym5q" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/10/17/DP/" data-id="ck2sw4vdx0000fohxvv41eup5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -153,19 +158,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>##第一次用markdown</p>
-<hr>
-<p>写一点自己心里的想法吧，反正也没人看得到<br>进入校园之后，真的感觉，很忙，压力很大，无数事情推着你走<br>有点迷茫，很累，不知道该怎么办<br>我想，我可能很难喜欢上这个学校了，不仅仅是不尽人愿，更多的是我无法产生一种归属感<br>但是虽然如此，我还是想稍微的挑战一下自己，我到底能坚持多久呢</p>
+        <p>写一点自己心里的想法吧，反正也没人看得到<br>进入校园之后，真的感觉，很忙，压力很大，无数事情推着你走<br>有点迷茫，很累，不知道该怎么办<br>我想，我可能很难喜欢上这个学校了，不仅仅是不尽人愿，更多的是我无法产生一种归属感<br>但是虽然如此，我还是想稍微的挑战一下自己，我到底能坚持多久呢</p>
 <blockquote>
 <p>凡心所向，素履所往<br>生如逆旅，一苇以航<br><strong>愿我不会后悔现在的选择</strong></p>
 </blockquote>
-<p><code>printf(&quot;Hello, world!&quot;);</code></p>
 <p>2019-10-11 00:26</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/10/11/begin/" data-id="ck29a213x0003iehx423jonht" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/10/11/begin/" data-id="ck2sw4ve30002fohxgkqmkklv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/diary/">diary</a></li></ul>
@@ -203,7 +205,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/10/09/MY-NEW-POST/" data-id="ck29a213t0002iehxr5sogjvj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/10/09/MY-NEW-POST/" data-id="ck2sw4ve50003fohxrx42qig4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -252,7 +254,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/10/09/hello-world/" data-id="ck29a213y0004iehxaihlva7s" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/10/09/hello-world/" data-id="ck2sw4ve90005fohxb8bqjcpv" class="article-share-link">Share</a>
       
       
     </footer>
